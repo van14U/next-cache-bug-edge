@@ -1,27 +1,22 @@
-// import { unstable_cache } from "next/cache";
+import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
 
 export const runtime = "edge";
 
 async function getLatestStory() {
-  // Fetch the latest item IDs from the Hacker News API
   return fetch('https://hacker-news.firebaseio.com/v0/newstories.json', {
     cache: 'no-store',
   }).then(response => response.json())
     .then(storyIds => {
-      console.log({ storyIds })
-      // Assuming the first ID is the latest story
       if (storyIds.length > 0) {
-        // Fetch the details of the latest story
         const randomIdx = Math.floor(Math.random() * storyIds.length);
         const storyId = storyIds[randomIdx];
+        console.log({ storyId })
         return fetch(`https://hacker-news.firebaseio.com/v0/item/${storyId}.json`, {
           cache: 'no-store',
         })
           .then(response => response.json())
           .then(story => {
-            console.log({ story })
-            // Log the title of the latest story
             return (story.title) as string;
           })
       }
@@ -29,14 +24,14 @@ async function getLatestStory() {
     })
 }
 
-// const cachedHackerNews = unstable_cache(
-//   getLatestStory,
-//   ['hacker-news'],
-//   { revalidate: 10 }
-// )
+const cachedHackerNews = unstable_cache(
+  getLatestStory,
+  ['hacker-news'],
+  { revalidate: 10 }
+)
 
 async function HackerNews() {
-  const data = await getLatestStory();
+  const data = await cachedHackerNews();
   return <div>{data}</div>
 }
 
