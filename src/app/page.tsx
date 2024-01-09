@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+// import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
 
 export const runtime = "edge";
@@ -29,14 +29,14 @@ async function getLatestStory() {
     })
 }
 
-const cachedHackerNews = unstable_cache(
-  getLatestStory,
-  ['hacker-news'],
-  { revalidate: 10 }
-)
+// const cachedHackerNews = unstable_cache(
+//   getLatestStory,
+//   ['hacker-news'],
+//   { revalidate: 10 }
+// )
 
 async function HackerNews() {
-  const data = await cachedHackerNews();
+  const data = await getLatestStory();
   return <div>{data}</div>
 }
 
