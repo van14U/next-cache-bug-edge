@@ -5,22 +5,20 @@ export const runtime = "edge";
 
 async function getLatestStory() {
   return fetch('https://hacker-news.firebaseio.com/v0/newstories.json', {
-    cache: 'no-store',
-  }).then(response => response.json())
-    .then(storyIds => {
-      if (storyIds.length > 0) {
-        const randomIdx = Math.floor(Math.random() * storyIds.length);
-        const storyId = storyIds[randomIdx];
-        console.log({ storyId })
-        return fetch(`https://hacker-news.firebaseio.com/v0/item/${storyId}.json`, {
-          cache: 'no-store',
+    next: {
+      revalidate: 600
+    }
+  })
+    .then(response => response.json())
+    .then(async storyIds => {
+      const randomIdx = Math.floor(Math.random() * storyIds.length);
+      const storyId = storyIds[randomIdx];
+      console.log({ storyId })
+      return fetch(`https://hacker-news.firebaseio.com/v0/item/${storyId}.json`)
+        .then(response => response.json())
+        .then(story => {
+          return (story.title) as string;
         })
-          .then(response => response.json())
-          .then(story => {
-            return (story.title) as string;
-          })
-      }
-      return "No news found";
     })
 }
 
