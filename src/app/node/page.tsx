@@ -6,6 +6,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 async function getLatestStory() {
+  await new Promise(resolve => setTimeout(resolve, 1000));
   return fetch('https://hacker-news.firebaseio.com/v0/newstories.json', {
     next: {
       revalidate: 600
@@ -27,7 +28,7 @@ async function getLatestStory() {
 const cachedHackerNews = unstable_cache(
   getLatestStory,
   ['hacker-news-node'],
-  { revalidate: 10 }
+  { revalidate: 15 }
 )
 
 async function HackerNews() {
