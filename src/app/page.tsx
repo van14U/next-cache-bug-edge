@@ -25,7 +25,10 @@ async function getLatestStory() {
 const cachedHackerNews = unstable_cache(
   getLatestStory,
   ['hacker-news'],
-  { revalidate: 10 }
+  {
+    revalidate: 60,
+    tags: ['hacker-news']
+  }
 )
 
 async function HackerNews() {
